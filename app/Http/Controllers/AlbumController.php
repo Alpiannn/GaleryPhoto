@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AlbumController extends Controller
 {
@@ -28,7 +29,7 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
-        $user_id = Auth()->user()->id;
+        $user_id = Auth::user()->id;
 
         $validasi = $request->validate([
             'nama' => 'required|max:255'

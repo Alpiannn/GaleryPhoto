@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Album;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PhotoController extends Controller
 {
@@ -13,7 +14,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        $userid = Auth()->user()->id;
+        $userid = Auth::user()->id;
 
         return view('photos.index', [
             'albums' => Album::where('user_id', $userid)->latest()->get(),
@@ -30,7 +31,9 @@ class PhotoController extends Controller
      */
     public function create()
     {
-        //
+        return view('photos.create', [
+            'albums' => Album::where('user_id', Auth()->user()->id)->get()
+        ]);
     }
 
     /**

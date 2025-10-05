@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\user;
 use Illuminate\Http\Request;
-use Illuminate\Auth;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -46,7 +46,7 @@ class UserController extends Controller
     public function edit(user $user)
     {
         // Ambil data user 
-        $userid = Auth()->user()->id;
+        $userid = Auth::user()->id;
 
         if ($userid != $user->id) {
             return abort(403);
