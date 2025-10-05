@@ -25,23 +25,23 @@
                         <li class="nav-item">
                             <a href="{{ route('home') }}" class="nav-link {{ Request::is('/') ? 'active fw-bold' : '' }}">Beranda</a>
                         </li>
-                        {{-- <li class="nav-item">
+                         <li class="nav-item">
                             <a href="{{ route('photos.index') }}" class="nav-link {{ Request::is('photos*') ? 'active fw-bold' : '' }}">Gallery</a>
-                        </li> --}}
+                        </li>
                     </ul>
 
                     <div class="d-flex gap-4 align-item-center">
                         {{-- tombol upload foto --}}
-                        {{-- <a href="{{ route('photos.create') }}" class="text-decoration-none text-dark fw-bold">Upload <i class="bi bi-cloud-arrow-up-fill"></i></a> --}}
+                        <a href="{{ route('photos.create') }}" class="text-decoration-none text-dark fw-bold">Upload <i class="bi bi-cloud-arrow-up-fill"></i></a>
                         <div class="dropdown">
                             <span class="text-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ Auth::user()->name }} <i class="bi bi-caret-down"></i>
                             </span>
 
                             <ul class="dropdown-menu">
-                                {{-- <li>
+                                <li>
                                     <a href="{{ route('photos.index') }}" class="dropdown-item"><i class="bi bi-image"></i> Gallery</a>
-                                </li> --}}
+                                </li> 
                                 <li>
                                     <a href="{{ route('users.edit', Auth()->user()->id) }}" class="dropdown-item"><i class="bi bi-pencil-square"></i> Edit Profil</a>
                                 </li>
