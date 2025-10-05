@@ -28,7 +28,17 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user_id = Auth()->user()->id;
+
+        $validasi = $request->validate([
+            'nama' => 'required|max:255'
+        ]);
+
+        $validasi['user_id'] = $user_id;
+
+        Album::create($validasi);
+
+        return redirect()->route('photos.index')->with('berhasil', 'Album berhasil ditambahkan');
     }
 
     /**

@@ -16,8 +16,8 @@ class PhotoController extends Controller
         $userid = Auth()->user()->id;
 
         return view('photos.index', [
-            'album' => Album::where('user_id', $userid)->latest()->get(),
-            'photo' => Photo::where('user_id', $userid)
+            'albums' => Album::where('user_id', $userid)->latest()->get(),
+            'photos' => Photo::where('user_id', $userid)
                 ->latest()
                 ->filter(request(['cari', 'album', 'arsip']))
                 ->paginate(12)
