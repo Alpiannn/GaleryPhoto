@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    use HasFactory;
-
-    protected $guarded = ['id'];
-    protected $with = ['user'];
+    protected $fillable = ['body', 'photo_id', 'user_id'];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $table->belongsTo(User::class);
     }
 
     public function photo()

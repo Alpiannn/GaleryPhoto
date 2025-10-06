@@ -43,9 +43,9 @@
                     <img src="{{ asset('img/avatar.png') }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
                     @endif
                 </div>
-                <span class="fw-bold">{{ $photo-user-name }}</span>
+                <span class="fw-bold">{{ $photo->user->name }}</span>
             </div>
-            <span class="text-secondary" style="font-size: 12px;">{{ $photo->ccreated_at->diffForHumans() }}</span>
+            <span class="text-secondary" style="font-size: 12px;">{{ $photo->created_at->diffForHumans() }}</span>
         </div>
     </div>
 </div>

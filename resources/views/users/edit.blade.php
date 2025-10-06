@@ -10,25 +10,25 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
-        
     @endif
 
     <div class="col-lg-6 mb-5">
         <h3 class="mb-5 fw-bold">Edit Profil</h3>
 
         {{-- Form Edit User --}}
+        {{-- PERBAIKAN 1: Ganti parameter menjadi username --}}
         <form action="{{ route('users.update', $user->username) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('put')
+            
             {{-- Input avatar / photo profil --}}
             <div class="mb-4">
                 <div class="ratio ratio-1x1 overflow-hidden rounded-circle mb-3" style="width: 120px">
-                    {{-- Jika user sudah punya photo profil --}}
                     @if ($user->avatar)
                         <img src="{{ asset('storage/'.$user->avatar) }}" alt="Avatar" class="avatar-preview object-fit-cover">
-                        <input type="hidden" name="avatarlama" value="{{ $user->avatar }}">
+                        <input type="hidden" name="old_avatar" value="{{ $user->avatar }}">
                     @else
-                    <img src="{{ asset('img/avatar.png') }}" alt="Avatar" class="avatar-preview object-fit-cover">
+                        <img src="{{ asset('img/avatar.png') }}" alt="Avatar" class="avatar-preview object-fit-cover">
                     @endif
                 </div>
                 <div class="col-lg-6">
@@ -44,7 +44,8 @@
             <div class="mb-4 row">
                 <div class="col-lg-6">
                     <label for="name" class="form-label fw-bold">Nama Lengkap</label>
-                    <input type="text" class="form-control p-3 @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user) }}" required>
+                    {{-- PERBAIKAN 2: Ganti value menjadi $user->name --}}
+                    <input type="text" class="form-control p-3 @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}" required>
                     @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -53,7 +54,8 @@
                 </div>
                 <div class="col-lg-6">
                     <label for="username" class="form-label fw-bold">Username</label>
-                    <input type="text" class="form-control p-3 @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username', $user) }}" required>
+                    {{-- PERBAIKAN 3: Ganti value menjadi $user->username --}}
+                    <input type="text" class="form-control p-3 @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username', $user->username) }}" required>
                     @error('username')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -61,9 +63,11 @@
                     @enderror
                 </div>
             </div>
+            
             <div class="mb-5">
                 <label for="email" class="form-label fw-bold">Email</label>
-                <input type="email" name="email" id="email" class="form-control p-3 @error('email') is-invalid @enderror" value="{{ old('email',$user) }}" required>
+                {{-- PERBAIKAN 4: Ganti value menjadi $user->email --}}
+                <input type="email" name="email" id="email" class="form-control p-3 @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
                 @error('email')
                     <div class="invalid-feedback">
                         {{ $message }}

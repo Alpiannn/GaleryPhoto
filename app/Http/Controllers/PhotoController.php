@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\Album;
+use App\Models\Comment;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
 {
@@ -41,7 +44,25 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'nama' => 'required|string|max:255',
+            'album_id' => 'nullable|exists:albums,id',
+            'body' => 'nullable|string',
+            'publish' => 'boolean'
+        ]);
+
+        $photo = time() . '.' . $request->photo->extension();
+        $upload = $request->photo->move(public_path('photo'), $photo);
+        $filePath = 'photo/' . $photo;
+        $validated['photo'] = $filePath;
+
+        $validated['user_id'] = auth()->id();
+
+        // Simpan data ke database
+        Photo::create($validated);
+
+        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil disimpan!');
     }
 
     /**
@@ -49,7 +70,14 @@ class PhotoController extends Controller
      */
     public function show(Photo $photo)
     {
-        //
+        return view('photos.show', [
+            'photo' => $photo,
+            'comments' => Comment::where('photo_id', $photo->id)->get(),
+            'likes' => Like::where('photo_id', $photo->id)
+                ->where('user_id', Auth()->user()->id)
+                ->get(),
+            'likecount' => Like::where('photo_id', $photo->id)->get()
+        ]);
     }
 
     /**
@@ -57,7 +85,7 @@ class PhotoController extends Controller
      */
     public function edit(Photo $photo)
     {
-        //
+        return view('photo.index', compact('photo'));
     }
 
     /**
@@ -65,7 +93,25 @@ class PhotoController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        //
+        $aturan = [
+            'nama' => 'required|max:255',
+            'photo' => 'required|image|file|max:2048',
+            'body' => 'max:255',
+            'album_id' => 'required'
+        ];
+        $validasiData = $request->validate($aturan);
+        $validasiData['user_id'] = Auth()->user()->id;
+        if ($request->publish) {
+            $validasiData['publish'] = true;
+        } else {
+            $validasiData['publish'] = false;
+        }
+        if ($request->file('photo')) {
+            Storage::delete($request->photolama);
+            $validasiData['photo'] = $request->file('photo')->store('photo-gallery');
+        }
+        Photo::where('id', $photo->id)->update($validasiData);
+        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil diubah');
     }
 
     /**
@@ -73,6 +119,13 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        //
+        Storage::delete($photo->photo);
+        Photo::destroy('id', $photo->id);
+
+        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil dihapus');
+    }
+    public function download(Photo $photo)
+    {
+        return Storage::download($photo->photo);
     }
 }

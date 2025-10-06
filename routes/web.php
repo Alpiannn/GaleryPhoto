@@ -7,6 +7,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\CommentController;
 
 
 Route::middleware('guest')->group(function () {
@@ -25,7 +27,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::resource('users', UserController::class);
-    Route::resource('/photos', PhotoController::class);
+    Route::resource('photos', PhotoController::class);
     Route::resource('/album', AlbumController::class);
+    Route::get('/photos/download/{photo}', [PhotoController::class, 'download'])->name('photos.download');
+    //like
+    Route::post('/like', [LikeController::class, 'like'])->name('like');
+    //unlike
+    Route::delete('/unlike/{like}', [LikeController::class, 'unlike'])->name('unlike');
+    Route::resource('/comments', CommentController::class);
 });
 //?

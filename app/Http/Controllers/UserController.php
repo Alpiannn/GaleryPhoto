@@ -52,7 +52,7 @@ class UserController extends Controller
             return abort(403);
         }
 
-        return view('user.edit', ['user' => $user]);
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
@@ -60,40 +60,49 @@ class UserController extends Controller
      */
     public function update(Request $request, user $user)
     {
-        $aturan = [
+        // Authorization - hanya pemilik yang bisa update
+        if (Auth::id() !== $user->id) {
+            abort(403);
+        }
+
+        // Rules validasi
+        $rules = [
             'name' => 'required|max:255',
-            'avatar' => 'image|file|max:1024'
+            'username' => 'required|alpha_dash|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'avatar' => 'nullable|image|file|max:1024'
         ];
 
+        // Jika ada password baru
         if ($request->password) {
-            $aturan['password'] = 'min:6|max:255';
-            $aturan['repassword'] = 'same:password';
-        }
-        if ($request->email != $user->email) {
-            $aturan['email'] = 'required|email|unique:users';
+            $rules['password'] = 'min:6|max:255';
+            $rules['repassword'] = 'same:password';
         }
 
-        // Jalankan validasi data
-        $validasiData = $request->validate($aturan);
+        // Validasi data
+        $validatedData = $request->validate($rules);
 
-        // Jika user mengupload photo profil
+        // Handle avatar upload
         if ($request->file('avatar')) {
-            // jika sebelumnya user sudah punya photo profil
+            // Hapus avatar lama jika ada
             if ($user->avatar) {
-                // photo profil yang lama harus dihapus
                 Storage::delete($user->avatar);
             }
-
-            // Simpan photo profil yang baru
-            $validasiData['avatar'] = $request->file('avatar')->store('avatar');
+            // Simpan avatar baru
+            $validatedData['avatar'] = $request->file('avatar')->store('avatars');
         }
 
-        // update data user
-        User::where('id', $user->id)->update($validasiData);
+        // Handle password update
+        if ($request->password) {
+            $validatedData['password'] = bcrypt($request->password);
+        }
 
-        // jika berhasil arahkan kembali ke halaman edit user sambil kirim session 'berhasil'
-        return redirect(route('users.edit', $request->username))
-            ->with('berhasil', 'Data berhasil diperbarui');
+        // Update data user
+        $user->update($validatedData);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('users.edit', $user->username)
+            ->with('berhasil', 'Profil berhasil diperbarui!');
     }
 
     /**

@@ -22,7 +22,7 @@
             <div class="d-flex flex-column">
                 <h1>{{ Auth::user()->name }}</h1>
                 <p>{{ Auth::user()->username }}</p>
-                <a href="{{ route('users.edit', Auth::user()->username) }}" class="btn btn-outline-dark rounded-pill">Edit Profil</a>
+                <a href="{{ route('users.edit', Auth::user()->id) }}" class="btn btn-outline-dark rounded-pill">Edit Profil</a>
             </div>
         </div>
         <div class="row align-items-center justify-content-between mb-4">
@@ -50,7 +50,7 @@
         </div>
         {{-- CRUD ALBUM --}}
         <div class="d-flex flex-wrap align-items-center gap-3 gap-lg-5 pb-5">
-            <a href="/photo?arsip=true" class="text-decoration-none px-2 py-1 text-secondary @if(request('arsip')) text-dark fw-bold @endif"><i class="bi bi-archive"></i> Arsip @if(request('arsip')) | {{ $photos->count() }} @endif</a>
+            <a href="/photos?arsip=true" class="text-decoration-none px-2 py-1 text-secondary @if(request('arsip')) text-dark fw-bold @endif"><i class="bi bi-archive"></i> Arsip @if(request('arsip')) | {{ $photos->count() }} @endif</a>
             @if ($albums->count())
                 @foreach ($albums as $album)
                     @if (request('album') == $album->nama)
@@ -61,7 +61,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#album{{ $album->id }}">Edit Album</a></li>
                                     <li>
-                                        <form action="{{ route('albums.destroy', $album->id) }}" method="post">
+                                        <form action="{{ route('album.destroy', $album->id) }}" method="post">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="dropdown-item" onclick="return confirm('Semua photo di album {{ $album->nama }} akan dihapus, yakin ingin menghapus?')">Hapus Album</button>
@@ -78,7 +78,7 @@
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="{{ route('albums.update', $album->id) }}" method="post" aria>
+                                            <form action="{{ route('album.update', $album->id) }}" method="post" aria>
                                                 @csrf
                                                 @method('put')
                                                 <div class="mb-3">
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     @else
-                    <a href="photo?album={{ $album->nama }}" class="text-decoration-none px-2 py-1 text-secondary">{{ $album->nama }}</a>
+                    <a href="photos?album={{ $album->nama }}" class="text-decoration-none px-2 py-1 text-secondary">{{ $album->nama }}</a>
                     @endif
                 @endforeach
             @endif
@@ -132,14 +132,14 @@
                 @foreach ($photos as $photo)
                     <div class="col-lg-4">
                       <a href="{{ route('photos.show', $photo->id) }}" class="ratio ratio-4x3 overflow-hidden">
-                        <img src="{{ asset('storage/.photo->photo') }}" alt="photo" class="rounded-3 object-fit-cover" alt="{{ $photo->nama }}">
+                        <img src="{{ asset($photo->photo) }}" alt="{{ $photo->nama }}" class="rounded-3 object-fit-cover" alt="{{ $photo->nama }}">
                     </a>  
                     </div>
                 @endforeach
             </div>
 
             <div class="d-flex justify-content-center">
-                {{ $photo->links() }}
+                {{ $photos->links() }}
             </div>
 
         @else
