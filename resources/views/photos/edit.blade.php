@@ -4,7 +4,7 @@
     <div class="container">
         <div class="col-lg-6 mb-5">
             <h3 class="mb-5 fw-bold">Edit Photo</h3>
-            <form action="{{ route('photos.update') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('photos.update', $photo->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('put')
                 {{-- Input Photo --}}

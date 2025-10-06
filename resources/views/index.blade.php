@@ -31,7 +31,7 @@
     @foreach ($photos as $photo)
     <div class="col-lg-3">
         <a href="{{ route('photos.show', $photo->id) }}" class="rati ratio-4x3 overflow-hidden">
-            <img src="{{ asset('storage/'. $photo->photo) }}" class="rounded-3 object-fit-cover" alt="{{ $photo->nama }}">
+            <img src="{{ asset( $photo->photo) }}" class="rounded-3 object-fit-cover" alt="{{ $photo->nama }}">
         </a>
 
         <div class="p-2">

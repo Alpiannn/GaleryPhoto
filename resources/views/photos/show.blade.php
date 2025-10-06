@@ -151,7 +151,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('comments.update') }}" method="POST">
+                                <form action="{{ route('comments.update', $comment->id) }}" method="POST">
                                     @csrf
                                     @method('put')
                                     <input type="hidden" name="photo_id" value="{{ $photo->id }}">

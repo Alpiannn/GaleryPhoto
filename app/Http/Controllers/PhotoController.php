@@ -85,7 +85,8 @@ class PhotoController extends Controller
      */
     public function edit(Photo $photo)
     {
-        return view('photo.index', compact('photo'));
+        $albums =  Album::where('user_id', Auth()->user()->id)->get();
+        return view('photos.edit', compact('photo', 'albums'));
     }
 
     /**
@@ -119,10 +120,8 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        Storage::delete($photo->photo);
-        Photo::destroy('id', $photo->id);
-
-        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil dihapus');
+        if ($photo->photo) {
+        }
     }
     public function download(Photo $photo)
     {
