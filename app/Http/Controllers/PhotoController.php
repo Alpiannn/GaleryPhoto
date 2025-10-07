@@ -94,25 +94,31 @@ class PhotoController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        $aturan = [
-            'nama' => 'required|max:255',
-            'photo' => 'required|image|file|max:2048',
-            'body' => 'max:255',
-            'album_id' => 'required'
-        ];
-        $validasiData = $request->validate($aturan);
-        $validasiData['user_id'] = Auth()->user()->id;
-        if ($request->publish) {
-            $validasiData['publish'] = true;
+        $validated = $request->validate([
+            'photo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'nama' => 'required|string|max:255',
+            'album_id' => 'nullable|exists:albums,id',
+            'body' => 'nullable|string',
+            'publish' => 'boolean'
+        ]);
+
+        if ($request->hasFile('photo')) {
+            if (file_exists(public_path($photo->photo))) {
+                unlink(public_path($photo->photo));
+            }
+            $newPhoto = time() . '.' . $request->photo->extension();
+            $upload = $request->photo->move(public_path('photo'), $newPhoto);
+            $filePath = 'photo/' . $newPhoto;
+            $validated['photo'] = $filePath;
         } else {
-            $validasiData['publish'] = false;
+            $validated['photo'] = $photo->photo;
         }
-        if ($request->file('photo')) {
-            Storage::delete($request->photolama);
-            $validasiData['photo'] = $request->file('photo')->store('photo-gallery');
-        }
-        Photo::where('id', $photo->id)->update($validasiData);
-        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil diubah');
+        $validated['publish'] = $request->has('publish') ? true : false;
+        $validated['user_id'] = auth()->id();
+
+        $photo->update($validated);
+
+        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil diubah!');
     }
 
     /**
@@ -120,8 +126,12 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        if ($photo->photo) {
+        if (file_exists(public_path($photo->photo))) {
+            unlink(public_path($photo->photo));
         }
+        $photo->delete();
+
+        return redirect()->route('photos.index')->with('berhasil', 'Photo berhasil dihapus');
     }
     public function download(Photo $photo)
     {
