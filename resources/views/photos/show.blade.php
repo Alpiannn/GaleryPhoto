@@ -10,7 +10,7 @@
                 <div class="d-flex align-items-center gap-3">
                     <div style="width: 60px; height: 60px">
                         @if ($photo->user->avatar)
-                            <img src="{{ asset('storage/'.$photo->user->avatar) }}" alt="{{ $photo->user->name }}" class="img-fluid rounded-circle">
+                            <img src="{{ asset($photo->user->avatar) }}" alt="{{ $photo->user->name }}" class="img-fluid rounded-circle">
                         @else
                         <img src="{{ asset('img/avatar.png') }}" alt="{{ $photo->user->name }}" class="img-fluid rounded-circle">
                         @endif
@@ -112,7 +112,7 @@
                         <div style="width: 25px; height: 25px;">
                             {{-- jika user sudah punya photo profil --}}
                             @if ($comment->user->avatar)
-                                <img src="{{ asset('storage/' . $comment->user->avatar) }}" class="img-fluid rounded-circle">
+                                <img src="{{ asset($comment->user->avatar) }}" class="img-fluid rounded-circle">
                             @else
                                 {{-- jika belum punya photo profil --}}
                                 <img src="{{ asset('img/avatar.png') }}" class="img-fluid rounded-circle">

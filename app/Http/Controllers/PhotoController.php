@@ -137,13 +137,13 @@ class PhotoController extends Controller
     }
     public function download(Photo $photo)
     {
-        // Pastikan file ada
         if (!file_exists(public_path($photo->photo))) {
             return redirect()->back()->with('error', 'File tidak ditemukan.');
         }
 
         $filePath = public_path($photo->photo);
-        $fileName = $photo->name . '.' . pathinfo($photo->photo, PATHINFO_EXTENSION);
+        $fileName = $photo->nama . '.jpg';
+        //  . pathinfo($photo->photo, PATHINFO_EXTENSION);
 
         return response()->download($filePath, $fileName);
     }
