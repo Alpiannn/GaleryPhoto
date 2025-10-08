@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -59,7 +58,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, user $user)
     {
         // Authorization - hanya pemilik yang bisa update
         if (Auth::id() !== $user->id) {
@@ -67,49 +66,39 @@ class UserController extends Controller
         }
 
         // Rules validasi
-        $rules = [
+        $validated = $request->validate([
             'name' => 'required|max:255',
             'username' => 'required|alpha_dash|max:255|unique:users,username,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'avatar' => 'nullable|image|file|max:1024'
-        ];
+        ]);
 
         // Jika ada password baru
         if ($request->password) {
-            $rules['password'] = 'min:6|max:255';
-            $rules['repassword'] = 'same:password';
+            $validated['password'] = 'min:6|max:255';
+            $validated['repassword'] = 'same:password';
         }
 
-        // Validasi data
-        $validatedData = $request->validate($rules);
-
-        // Handle avatar upload
-        if ($request->file('avatar')) {
-            // Hapus avatar lama jika ada
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
-            }
-
-            // Generate nama file
-            $fileName = 'user-' . $user->id . '-' . time() . '.' . $request->avatar->extension();
-
-            // Upload ke storage
-            $avatarPath = $request->file('avatar')->storeAs('avatar', $fileName, 'public');
-
-            // Simpan path ke validated data
-            $validatedData['avatar'] = $avatarPath; // "avatar/user-1-1736254321.jpg"
+        if ($request->hasFile('avatar')) {
+            // if (public_path($user->avatar)) {
+            //     unlink(public_path($user->avatar));
+            // }
+            $newAvatar = time() . '.' . $request->avatar->extension();
+            $upload = $request->avatar->move(public_path('avatar'), $newAvatar);
+            $path = 'avatar/' . $newAvatar;
+            $validated['avatar'] = $path;
         }
 
         // Handle password update
         if ($request->password) {
-            $validatedData['password'] = bcrypt($request->password);
+            $validated['password'] = bcrypt($request->password);
         }
 
         // Update data user
-        $user->update($validatedData);
+        $user->update($validated);
 
         // Redirect dengan pesan sukses
-        return redirect()->route('users.edit', $user->username)
+        return redirect()->route('photos.index')
             ->with('berhasil', 'Profil berhasil diperbarui!');
     }
 

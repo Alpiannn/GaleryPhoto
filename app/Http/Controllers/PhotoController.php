@@ -6,6 +6,7 @@ use App\Models\Photo;
 use App\Models\Album;
 use App\Models\Comment;
 use App\Models\Like;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -21,6 +22,7 @@ class PhotoController extends Controller
 
         return view('photos.index', [
             'albums' => Album::where('user_id', $userid)->latest()->get(),
+            'user' =>  User::find($userid),
             'photos' => Photo::where('user_id', $userid)
                 ->latest()
                 ->filter(request(['cari', 'album', 'arsip']))

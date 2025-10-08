@@ -14,7 +14,7 @@
         <div class="d-flex flex-column flex-lg-row gap-4 justify-content-center mb-5">
             <div class="ratio ratio-1x1 overflow-hidden rounded-circle" style="width: 120px; height: 120px;">
                 @if (Auth()->user()->avatar)
-                <img src="{{ asset('storage/'.Auth()->user()->avatar) }}" alt="avatar" class="object-fit-cover">
+                <img src="{{ asset($user->avatar) }}" alt="avatar" class="object-fit-cover">
                 @else
                 <img src="{{ asset('img/avatar.png') }}" alt="avatar" class="object-fit-cover">
                 @endif

@@ -16,7 +16,7 @@
         <h3 class="mb-5 fw-bold">Edit Profil</h3>
 
         {{-- Form Edit User --}}
-        {{-- PERBAIKAN 1: Ganti parameter menjadi username --}}
+   
         <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('put')
@@ -25,7 +25,7 @@
             <div class="mb-4">
                 <div class="ratio ratio-1x1 overflow-hidden rounded-circle mb-3" style="width: 120px">
                     @if ($user->avatar)
-                        <img src="{{ asset('storage/'.$user->avatar) }}" alt="Avatar" class="avatar-preview object-fit-cover">
+                        <img src="{{ asset($user->avatar) }}" alt="Avatar" class="avatar-preview object-fit-cover">
                         <input type="hidden" name="old_avatar" value="{{ $user->avatar }}">
                     @else
                         <img src="{{ asset('img/avatar.png') }}" alt="Avatar" class="avatar-preview object-fit-cover">
