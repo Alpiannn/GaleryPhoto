@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -58,7 +59,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, user $user)
+    public function update(Request $request, User $user)
     {
         // Authorization - hanya pemilik yang bisa update
         if (Auth::id() !== $user->id) {
@@ -85,11 +86,18 @@ class UserController extends Controller
         // Handle avatar upload
         if ($request->file('avatar')) {
             // Hapus avatar lama jika ada
-            if ($user->avatar) {
-                Storage::delete($user->avatar);
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
             }
-            // Simpan avatar baru
-            $validatedData['avatar'] = $request->file('avatar')->store('avatars');
+
+            // Generate nama file
+            $fileName = 'user-' . $user->id . '-' . time() . '.' . $request->avatar->extension();
+
+            // Upload ke storage
+            $avatarPath = $request->file('avatar')->storeAs('avatar', $fileName, 'public');
+
+            // Simpan path ke validated data
+            $validatedData['avatar'] = $avatarPath; // "avatar/user-1-1736254321.jpg"
         }
 
         // Handle password update

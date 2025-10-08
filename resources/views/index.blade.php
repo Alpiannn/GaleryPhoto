@@ -38,7 +38,7 @@
             <div class="d-flex align-items-center gap-2">
                 <div class="d-flex align-blick bg-secondary rounded-circle overflow-hidden" style="width: 30px; height: 30px;">
                     @if ($photo->user->avatar)
-                    <img src="{{ asset('storage/'.$photo->user->avatar) }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
+                    <img src="{{ asset($user->avatar) }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
                     @else
                     <img src="{{ asset('img/avatar.png') }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
                     @endif

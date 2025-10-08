@@ -17,7 +17,7 @@
 
         {{-- Form Edit User --}}
         {{-- PERBAIKAN 1: Ganti parameter menjadi username --}}
-        <form action="{{ route('users.update', $user->username) }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('put')
             

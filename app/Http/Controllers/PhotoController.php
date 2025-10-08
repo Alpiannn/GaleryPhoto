@@ -141,7 +141,7 @@ class PhotoController extends Controller
         }
 
         $filePath = public_path($photo->photo);
-        $fileName = $photo->nama . '.' . pathinfo($photo->photo, PATHINFO_EXTENSION);
+        $fileName = $photo->name . '.' . pathinfo($photo->photo, PATHINFO_EXTENSION);
 
         return response()->download($filePath, $fileName);
     }
