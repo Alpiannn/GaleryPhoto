@@ -63,7 +63,17 @@ class AlbumController extends Controller
      */
     public function update(Request $request, Album $album)
     {
-        //
+        $user_id = Auth::user()->id;
+
+        $validasi = $request->validate([
+            'nama' => 'required|max:255'
+        ]);
+
+        $validasi['user_id'] = $user_id;
+
+        $album->update($validasi);
+
+        return redirect()->route('photos.index')->with('berhasil', 'Album berhasil diubah');
     }
 
     /**
@@ -71,6 +81,8 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
-        //
+        $album->delete();
+
+        return redirect()->route('photos.index')->with('berhasil', 'Album berhasil dihapus');
     }
 }

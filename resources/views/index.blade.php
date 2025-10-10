@@ -4,7 +4,7 @@
 
 <div class="text-center py-2 py-lg-5">
     <h1 class="mb-3">Temukan photo menarik dan kreatif</h1>
-    <p><b>GaDosQ</b>adalah tempat terbaik untuk menyimpan kenangan indah yang terabadikan</p>
+    <p><b>GaDosQ</b> adalah tempat terbaik untuk menyimpan kenangan indah yang terabadikan</p>
 </div>
 
 <div class="col-lg-5 mx-auto py-4">
@@ -29,29 +29,33 @@
 @else
 <div class="row row-gap-5 pb-5 justify-content-center">
     @foreach ($photos as $photo)
-    <div class="col-lg-3">
-        <a href="{{ route('photos.show', $photo->id) }}" class="rati ratio-4x3 overflow-hidden">
-            <img src="{{ asset( $photo->photo) }}" class="rounded-3 object-fit-cover" alt="{{ $photo->nama }}">
-        </a>
-
-        <div class="p-2">
-            <div class="d-flex align-items-center gap-2">
-                <div class="d-flex align-blick bg-secondary rounded-circle overflow-hidden" style="width: 30px; height: 30px;">
-                    @if ($photo->user->avatar)
-                    <img src="{{ asset($photo->user->avatar) }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
-                    @else
-                    <img src="{{ asset('img/avatar.png') }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
-                    @endif
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <a href="{{ route('photos.show', $photo->id) }}" class="ratio ratio-4x3 overflow-hidden rounded-top">
+                <img src="{{ asset($photo->photo) }}" class="object-fit-cover w-100 h-100" alt="{{ $photo->nama }}">
+            </a>
+            
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="flex-shrink-0 bg-secondary rounded-circle overflow-hidden" style="width: 30px; height: 30px;">
+                        @if ($photo->user->avatar)
+                        <img src="{{ asset($photo->user->avatar) }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
+                        @else
+                        <img src="{{ asset('img/avatar.png') }}" alt="Photo Profil" class="object-fit-cover w-100 h-100">
+                        @endif
+                    </div>
+                    <div class="flex-grow-1">
+                        <span class="fw-bold d-block">{{ $photo->user->name }}</span>
+                        <small class="text-muted">{{ $photo->created_at->diffForHumans() }}</small>
+                    </div>
                 </div>
-                <span class="fw-bold">{{ $photo->user->name }}</span>
             </div>
-            <span class="text-secondary" style="font-size: 12px;">{{ $photo->created_at->diffForHumans() }}</span>
         </div>
     </div>
+    @endforeach
 </div>
-@endforeach
 
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center mt-4">
     {{ $photos->links() }}
 </div>
 @endif
